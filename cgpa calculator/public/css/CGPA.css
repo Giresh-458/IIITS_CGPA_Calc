@@ -1,0 +1,153 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: url("../images/green background.jpg") no-repeat center center fixed; /* replace with your image */
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: rgba(255, 255, 255, 0.995);
+    backdrop-filter: blur(15px);
+    border-radius: 25px;
+    padding: 20px 25px;
+    width: 80%;
+    max-width: 900px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.profile-btn-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center; 
+    margin-bottom: 20px;
+}
+
+.glass-btn {
+    padding: 10px 25px;
+    background: rgba(0, 128, 0, 0.35);
+    color: #000;
+    font-weight: bold;
+    border-radius: 20px;
+    text-decoration: none;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.glass-btn:hover {
+    background: rgba(0, 128, 0, 0.65);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+h1 {
+    color: #000;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+p.note {
+    color: #000;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+form#semester-select {
+    margin-bottom: 15px;
+}
+
+select {
+    padding: 10px;
+    border-radius: 12px;
+    border: 1px solid #ccc;
+    outline: none;
+    font-size: 16px;
+    color: #000;
+    background: rgba(255,255,255,0.8);
+}
+
+.subjects-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    width: 100%;
+    padding: 10px 0;
+}
+
+.subject-card {
+    background: rgba(0, 128, 0, 0.1); 
+    backdrop-filter: blur(5px);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    transition: transform 0.2s;
+}
+
+.subject-card:hover {
+    transform: translateY(-3px);
+}
+
+.subject-card h3, .subject-card p {
+    margin: 5px 0;
+    color: #000;
+}
+
+.subject-card select {
+    width: 100%;
+    padding: 5px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+button {
+    display: block;
+    margin: 20px auto 0 auto;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 20px;
+    background: rgba(0, 128, 0, 0.5);
+    color: #000;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+button:hover {
+    background: rgba(0, 128, 0, 0.7);
+    transform: translateY(-2px);
+}
+
+.sgpa-cgpa {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+    font-size: 18px;
+    color: #000;
+    font-weight: bold;
+}
+
+@media(max-width: 768px) {
+    .subjects-grid {
+        grid-template-columns: 1fr;
+    }
+}

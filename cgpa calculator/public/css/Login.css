@@ -1,0 +1,128 @@
+body {
+  margin: 0;
+  font-family: 'Inter', Arial, sans-serif;
+  background: url("../images/green background.jpg") no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.container {
+  width: 1000px;
+  max-width: 95%;
+  background: #ffffffee; 
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  overflow: hidden;
+}
+
+.container img {
+  width: 50%;
+  object-fit: cover;
+}
+
+.container2 {
+  flex: 1;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.container2 h1 {
+  margin-bottom: 10px;
+  color: #2a9b4f;
+  font-size: 28px;
+}
+
+.container2 p {
+  margin-bottom: 25px;
+  color: #555;
+  font-size: 15px;
+}
+
+label {
+  display: block;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.textbox {
+  width: 100%;
+  height: 45px;
+  padding: 0 12px;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  line-height: 22px;
+  font-weight: 400;
+  background: #fff;
+  border-radius: 6px;
+  border: 1px solid #dee1e6;
+  outline: none;
+  margin-bottom: 18px;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.textbox:hover {
+  border-color: #b5b9c4;
+}
+
+.textbox:focus {
+  border-color: #2a9b4f;
+  box-shadow: 0 0 4px rgba(42, 155, 79, 0.3);
+}
+
+.button {
+  width: 100%;
+  height: 46px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #2a9b4f, #227c40);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  margin-top: 10px;
+}
+
+.button:hover {
+  background: linear-gradient(135deg, #227c40, #1e6d38);
+  transform: translateY(-2px);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+form a {
+  display: block;
+  margin-top: 18px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #2a9b4f;
+  transition: color 0.2s ease-in-out;
+}
+
+form a:hover {
+  color: #227c40;
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    width: 95%;
+  }
+
+  .container img {
+    width: 100%;
+    height: 200px;
+  }
+}

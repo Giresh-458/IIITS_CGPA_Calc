@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../css/Login.css">
+</head>
+<body>
+    <div class="container">
+        <img src="../images/Percentage-to-CGPA-2.webp" alt="">
+        <div class="container2">
+            <h1>Welcome Back to IIITS-CSE CGPA Tracker!</h1>
+    <p>Log in to access your CGPA calculator.</p>
+    <form action="/Home" method="post">
+        <p style="color:red"><%= locals.msg%></p>
+        <label for="Roll No">Roll No</label>
+        <input class="textbox" type="text" name="RollNo" placeholder="S20230010001" pattern="S20230010[0-9]{3}" title="Enter a valid Roll No (e.g., S20230010001)" required>
+        <label for="password">Password</label>
+        <input class="textbox" type="password" name="password" placeholder="******" required>
+        <button class="button">Login</button>
+        <a href="/SignUp">Don't have an account? Sign Up</a>
+    </form>
+        </div>
+    </div>
+</body>
+</html>

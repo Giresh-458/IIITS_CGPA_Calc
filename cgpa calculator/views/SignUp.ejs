@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IIITS-CSE CGPA Tracker</title>
+  <link rel="stylesheet" href="../css/SignUp.css">
+</head>
+<body>
+  <div class="container">
+  <div class="left">
+    <h1>Start Your Academic Journey</h1>
+    <p>Track your IIITS-CSE CGPA, set goals, and monitor your progress with ease.</p>
+    <img src="../images/signup.jpg" alt="">
+  </div>
+
+  <div class="right">
+    <h1>Create Your Account</h1>
+    <p>Unlock your academic potential.</p>
+    <p style="color:red"><%= locals.msg%></p>
+    <form action="/SignUp" method="post">
+      <label for="RollNo">Roll Number</label>
+      <input type="text" name="RollNo" placeholder="S20230010001" pattern="S20230010[0-9]{3}" title="Enter a valid Roll No (e.g., S20230010001)" required>
+
+      <label for="name">Name</label>
+      <input type="text" name="name" placeholder="Adam" required>
+
+      <label for="email">Email</label>
+      <input type="email" name="email" placeholder="Adam@gmail.com" required>
+
+      <label for="password">Password</label>
+      <input type="password" name="password" placeholder="********" required>
+
+      <button class="button">Sign Up</button>
+      <a href="/">Already have an account? Log In</a>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
