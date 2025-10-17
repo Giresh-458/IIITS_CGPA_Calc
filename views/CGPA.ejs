@@ -7,9 +7,7 @@
     <link rel="stylesheet" href="../css/CGPA.css">
 </head>
 <body>
-
 <div class="container">
-
     <div class="profile-btn-wrapper">
         <a href="/profile" class="glass-btn">Profile</a>
     </div>
@@ -26,10 +24,23 @@
 
     <p class="note">Grades must be O, A, B, C, D, P, F</p>
 
+    <% if (typeof sgpa !== "undefined") { %>
+        <div class="sgpa-cgpa">
+            <span>SGPA: <%= sgpa %></span>
+            <span>CGPA: <%= cgpa %></span>
+        </div>
+    <% } %>
+
     <form action="/submitGrades" method="post">
         <% if (Subjects && Subjects.length > 0) { %>
             <div class="subjects-grid">
-                <% Subjects.forEach(subject => { %>
+                <% Subjects.forEach(subject => { 
+                    const nameLower = subject.subject_name.toLowerCase();
+                    // Skip BTP if path is honours
+                    if(path === 'honours' && nameLower.includes('btp')) return;
+                    // Skip Honours if path is btp
+                    if(path === 'btp' && nameLower.includes('honours')) return;
+                %>
                     <div class="subject-card">
                         <h3><%= subject.subject_name %></h3>
                         <p><%= subject.credits %> credits</p>
@@ -48,14 +59,26 @@
         <% } %>
     </form>
 
-    <% if (typeof sgpa !== "undefined") { %>
-        <div class="sgpa-cgpa">
-            <span>SGPA: <%= sgpa %></span>
-            <span>CGPA: <%= cgpa %></span>
-        </div>
-    <% } %>
+<% if (!path && semester >= 5) { %>
+<div id="pathModal" class="modal">
+  <div class="modal-content">
+    <h2>Select Your Path</h2>
+    <form action="/selectPath" method="POST">
+      <select name="path" required>
+        <option value="">--Choose--</option>
+        <option value="btp">BTP</option>
+        <option value="honours">Honours</option>
+      </select>
+      <br><br>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+</div>
+<script>
+  document.getElementById('pathModal').style.display = 'block';
+</script>
+<% } %>
 
 </div>
-
 </body>
 </html>

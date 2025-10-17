@@ -1,10 +1,11 @@
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+
 const userSchema = new mongoose.Schema({
   RollNo: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   email: { type: String, unique: true, sparse: true },
-  password: { type: String, required: true }, 
-  
+  password: { type: String, required: true },
+  path: { type: String, enum: ["btp", "honours"], default: null }, 
   semesters: [
     {
       semester: { type: Number, required: true },
@@ -17,7 +18,6 @@ const userSchema = new mongoose.Schema({
       sgpa: Number
     }
   ],
-
   cgpa: Number
 });
 

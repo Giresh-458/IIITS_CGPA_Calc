@@ -7,14 +7,17 @@ const bcrypt=require("bcrypt")
 const User = require("./models/UserModel")
 const Subject = require("./models/SubjectsSchema");
 
+const dotenv = require("dotenv")
+dotenv.config({ path: './.env' })
+
 const app = express()
-const PORT= 3000
+const PORT= process.env.PORT
 
 app.use(express.json());
 app.set("view engine","ejs")
 app.use(bodyParser.urlencoded({extended:true}))
 app.use(session({
-  secret: "GLV_458_", 
+  secret: process.env.SESSION_SECRET, 
   resave: false,
   saveUninitialized: false,
   cookie: { secure: false } 
@@ -22,9 +25,10 @@ app.use(session({
 app.set("views",path.join(__dirname,"views"))
 app.use(express.static(path.join(__dirname, "public")));
 
-mongoose.connect("mongodb://127.0.0.1:27017/CGPA-IIITS(CSE)")
+mongoose.connect(process.env.MONGO_URI)
   .then(async () => {
     console.log("Connected to MongoDB");
+    await Subject.deleteMany({});
 
     const count = await Subject.countDocuments();
     if (count === 0) {
@@ -69,6 +73,7 @@ mongoose.connect("mongodb://127.0.0.1:27017/CGPA-IIITS(CSE)")
       { subject_name: "ELECTIVE-4", credits: 3, semester: 5 },
       { subject_name: "SSHAM-II", credits: 2, semester: 5 },
       { subject_name: "QRA", credits: 2, semester: 5 },
+      { subject_name: "HONOURS-I", credits: 4, semester: 5 },
 
       // Semester 6
       { subject_name: "WBD", credits: 4, semester: 6 },
@@ -78,15 +83,18 @@ mongoose.connect("mongodb://127.0.0.1:27017/CGPA-IIITS(CSE)")
       { subject_name: "IE-I", credits: 2, semester: 6 },
       { subject_name: "SSHAM-III", credits: 2, semester: 6 },
       { subject_name: "BTP-I", credits: 4, semester: 6 },
+      { subject_name: "HONOURS-II", credits: 4, semester: 6 },
       // Semester 7
       { subject_name: "ELECTIVE-8", credits: 3, semester: 7 },
       { subject_name: "IE-II", credits: 3, semester: 7 },
       { subject_name: "SSHAM-IV", credits: 2, semester: 7 },
       { subject_name: "BTP-II", credits: 4, semester: 7 },
+      { subject_name: "HONOURS-III", credits: 4, semester: 7 },
       // Semester 8
       { subject_name: "ELECTIVE-9", credits: 3, semester: 8 },
       { subject_name: "IE-III", credits: 3, semester: 8 },
       { subject_name: "SSHAM-V", credits: 2, semester: 8 },
+      { subject_name: "HONOURS-IV", credits: 4, semester: 8 }
       ];
       await Subject.insertMany(subjects);
       console.log("Subjects seeded!");
@@ -112,15 +120,29 @@ app.post("/Home",async (req,res)=>{
 })
 
 app.get("/Home", async (req, res) => {
-  const semester = req.query.semester || 1;
-  let Subjects = [];
+  if (!req.session.user) return res.redirect("/");
 
-  if (semester) {
-    Subjects = await Subject.find({ semester });
+  const semester = parseInt(req.query.semester) || 1;
+  const user = await User.findById(req.session.user.id);
+  const path = user.path || null;
+
+  let Subjects = await Subject.find({ semester });
+
+  // Filter subjects based on selected path
+  if ([5,6,7,8].includes(semester)) {
+    if (path === "honours") {
+      Subjects = Subjects.filter(s => !s.subject_name.toLowerCase().includes("btp"));
+    } else if (path === "btp") {
+      Subjects = Subjects.filter(s => !s.subject_name.toLowerCase().includes("honours"));
+    }
   }
 
-  res.render("CGPA", { semester, Subjects });
+  res.render("CGPA", { semester, Subjects, path });
 });
+
+
+
+
 
 app.get("/SignUp",(req,res)=>{
     res.render("SignUp")
@@ -167,37 +189,40 @@ app.get("/logout", (req, res) => {
 const gradePoints = { O: 10, A: 9, B: 8, C: 7, D: 6, P: 5, F: 0 };
 
 app.post("/submitGrades", async (req, res) => {
-
   try {
-    const userId = req.session.user?._id || req.session.user?.id;
-if (!userId) {
-  return res.redirect("/"); 
-}
-    const { semester, grades } = req.body; 
-        
+    const userId = req.session.user?.id;
+    if (!userId) return res.redirect("/");
 
-    const subjects = await Subject.find({ semester });
+    const { semester, grades } = req.body;
+    let subjects = await Subject.find({ semester });
+
+    const user = await User.findById(userId);
+    if (semester==6||semester==5||semester==7||semester==8) {
+      if (user.path == "honours") {
+        subjects = subjects.filter(s => !s.subject_name.toLowerCase().includes("btp"));
+        
+      } else if (user.path == "btp") {
+        subjects = subjects.filter(s => !s.subject_name.toLowerCase().includes("honours"));
+      }
+    }
+
+    
 
     let totalCredits = 0;
     let totalPoints = 0;
 
-    const semesterGrades = subjects.map((subject) => {
+    const semesterGrades = subjects.map(subject => {
       const grade = grades[subject._id] ? grades[subject._id].toUpperCase() : "F";
       const points = gradePoints[grade] || 0;
 
       totalCredits += subject.credits;
       totalPoints += points * subject.credits;
 
-      return {
-        subject_code: subject._id,
-        grade
-      };
+      return { subject_code: subject._id, grade };
     });
 
     const sgpa = totalCredits ? totalPoints / totalCredits : 0;
 
-    const user = await User.findById(userId);
-    
     const existingSemesterIndex = user.semesters.findIndex(s => s.semester == semester);
     if (existingSemesterIndex >= 0) {
       user.semesters[existingSemesterIndex].grades = semesterGrades;
@@ -206,8 +231,8 @@ if (!userId) {
       user.semesters.push({ semester, grades: semesterGrades, sgpa });
     }
 
-    const totalSgpa = user.semesters.reduce((acc, s) => acc + s.sgpa, 0).toFixed(2);
-    user.cgpa = (user.semesters.length ? totalSgpa / user.semesters.length : 0).toFixed(2);
+    const totalSgpa = user.semesters.reduce((acc, s) => acc + s.sgpa, 0);
+    user.cgpa = (user.semesters.length ? (totalSgpa / user.semesters.length).toFixed(2) : 0);
 
     await user.save();
 
@@ -215,7 +240,8 @@ if (!userId) {
       semester,
       Subjects: subjects,
       sgpa: sgpa.toFixed(2),
-      cgpa: user.cgpa.toFixed(2)
+      cgpa: user.cgpa,
+      path: user.path
     });
 
   } catch (err) {
@@ -223,6 +249,31 @@ if (!userId) {
     res.status(500).send("Server Error");
   }
 });
+
+
+
+app.get("/selectPath", async (req, res) => {
+  res.render("SelectPath"); 
+});
+
+
+app.post("/selectPath", async (req, res) => {
+  const { path } = req.body; 
+  const user = await User.findById(req.session.user.id);
+
+  if (user.path && user.path !== path) {
+    user.semesters = user.semesters.filter(s => s.semester < 5 || s.semester > 8);
+  }
+
+  user.path = path;
+  await user.save();
+
+  res.redirect("/Home?semester=5");
+});
+
+
+
+
 
 app.post("/SignUp",async (req,res)=>{
     const {name,password, RollNo, email}=req.body
@@ -258,7 +309,8 @@ app.get("/profile", async (req, res) => {
         RollNo: user.RollNo,
         email: user.email,
         CGPA: (user.cgpa || 0).toFixed(2),
-        allSemesters: sortedSemesters
+        allSemesters: sortedSemesters,
+        path: user.path || null
     });
 });
 
