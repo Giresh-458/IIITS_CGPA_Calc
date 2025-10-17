@@ -4,7 +4,6 @@
 [![Express](https://img.shields.io/badge/Express.js-Framework-blue?logo=express)](https://expressjs.com/)
 [![MongoDB Atlas](https://img.shields.io/badge/MongoDB-Atlas-green?logo=mongodb)](https://www.mongodb.com/atlas)
 [![Render](https://img.shields.io/badge/Deployed%20on-Render-purple?logo=render)](https://render.com/)
-[![IIIT Sri City](https://img.shields.io/badge/IIIT-Sri%20City-CSE-orange)](#)
 
 A full-stack **Node.js + Express + MongoDB Atlas** web app built **for IIIT Sri City CSE students** to compute, track, and visualize their **SGPA & CGPA** seamlessly.
 Deployed on **Render** with a cloud-based database on **MongoDB Atlas**.
