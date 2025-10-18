@@ -153,17 +153,26 @@ form a:hover {
 
 @media (max-width: 768px) {
   .container {
-    flex-direction: column-reverse;
-    padding: 30px;
+    flex-direction: column;
+    padding: 25px 20px;
   }
 
   .left {
+    order: 0;
     text-align: center;
+  }
+
+  .right {
+    order: 1; 
+    margin-top: 20px;
   }
 
   .left img {
     width: 100%;
-    display: block;
-    margin-top: 25px;
+    height: auto; 
+    object-fit: contain;
+    margin-top: 15px;
   }
 }
+
+

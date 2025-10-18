@@ -150,7 +150,6 @@ li.semester-item:hover {
   background: rgba(0, 128, 0, 0.1);
 }
 
-
 @media (max-width: 900px) {
   .container {
     padding: 30px 25px;
@@ -225,5 +224,11 @@ li.semester-item:hover {
 
   .path-form select {
     font-size: 13px;
+  }
+}
+
+@media (max-width: 500px) {
+  .cgpa {
+    font-size: 18px;
   }
 }
