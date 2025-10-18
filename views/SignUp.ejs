@@ -20,8 +20,7 @@
     <p style="color:red"><%= locals.msg%></p>
     <form action="/SignUp" method="post">
       <label for="RollNo">Roll Number</label>
-      <input type="text" name="RollNo" placeholder="S20230010001" pattern="S20230010[0-9]{3}" title="Enter a valid Roll No (e.g., S20230010001)" required>
-
+      <input class="textbox" type="text" name="RollNo" placeholder="S202[2-7]0010001" pattern="S202[2-7]0010[0-9]{3}" title="Enter a valid Roll No (e.g., S20230010256)" required>
       <label for="name">Name</label>
       <input type="text" name="name" placeholder="Adam" required>
 

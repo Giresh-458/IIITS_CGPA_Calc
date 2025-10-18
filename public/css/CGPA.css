@@ -2,7 +2,7 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: url("../images/green background.jpg") no-repeat center center fixed; /* replace with your image */
+    background: url("../images/green background.jpg") no-repeat center center fixed;
     background-size: cover;
     display: flex;
     justify-content: center;
@@ -14,10 +14,10 @@ body {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(15px);
     border-radius: 25px;
-    padding: 20px 25px;
-    width: 80%;
-    max-width: 900px;
-    max-height: 85vh;
+    padding: 25px 35px;
+    width: 85%;
+    max-width: 950px;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
     display: flex;
@@ -28,12 +28,12 @@ body {
 .profile-btn-wrapper {
     width: 100%;
     display: flex;
-    justify-content: center; 
+    justify-content: center;
     margin-bottom: 20px;
 }
 
 .glass-btn {
-    padding: 10px 25px;
+    padding: 12px 28px;
     background: rgba(0, 128, 0, 0.35);
     color: #000;
     font-weight: bold;
@@ -56,13 +56,14 @@ h1 {
     color: #000;
     margin-bottom: 15px;
     text-align: center;
+    font-size: 2rem;
 }
 
 p.note {
     color: #000;
     font-size: 14px;
     text-align: center;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 form#semester-select {
@@ -81,14 +82,14 @@ select {
 
 .subjects-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
     gap: 15px;
     width: 100%;
     padding: 10px 0;
 }
 
 .subject-card {
-    background: rgba(0, 128, 0, 0.1); 
+    background: rgba(0, 128, 0, 0.1);
     backdrop-filter: blur(5px);
     border-radius: 15px;
     padding: 15px;
@@ -104,14 +105,15 @@ select {
     transform: translateY(-3px);
 }
 
-.subject-card h3, .subject-card p {
+.subject-card h3, 
+.subject-card p {
     margin: 5px 0;
     color: #000;
 }
 
 .subject-card select {
     width: 100%;
-    padding: 5px;
+    padding: 8px;
     border-radius: 10px;
     border: 1px solid #ccc;
     font-size: 14px;
@@ -119,8 +121,8 @@ select {
 
 button {
     display: block;
-    margin: 20px auto 0 auto;
-    padding: 12px 25px;
+    margin: 25px auto 0 auto;
+    padding: 12px 28px;
     border: none;
     border-radius: 20px;
     background: rgba(0, 128, 0, 0.5);
@@ -139,37 +141,92 @@ button:hover {
 
 .sgpa-cgpa {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
     margin-top: 15px;
     font-size: 18px;
     color: #000;
     font-weight: bold;
-}
-
-@media(max-width: 768px) {
-    .subjects-grid {
-        grid-template-columns: 1fr;
-    }
+    justify-content: center;
 }
 
 .modal {
-  display: none; 
-  position: fixed; 
-  z-index: 1000; 
+  display: none;
+  position: fixed;
+  z-index: 1000;
   left: 0;
   top: 0;
-  width: 100%; 
-  height: 100%; 
-  overflow: auto; 
-  background-color: rgba(0,0,0,0.5); 
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.5);
 }
 
 .modal-content {
   background-color: #fff;
-  margin: 15% auto; 
+  margin: 20% auto;
   padding: 30px;
   border-radius: 15px;
-  width: 300px;
+  width: 80%;
+  max-width: 350px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+@media (max-width: 768px) {
+    body {
+        align-items: flex-start;
+        padding: 15px;
+    }
+
+    .container {
+        width: 95%;
+        padding: 20px;
+        border-radius: 20px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    .glass-btn {
+        font-size: 15px;
+        padding: 10px 20px;
+    }
+
+    .subject-card {
+        padding: 12px;
+    }
+
+    button {
+        font-size: 16px;
+        padding: 10px 22px;
+    }
+
+    .sgpa-cgpa {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px;
+        width: 95%;
+    }
+
+    h1 {
+        font-size: 1.4rem;
+    }
+
+    select, button, .glass-btn {
+        font-size: 14px;
+    }
+
+    .subject-card h3 {
+        font-size: 1rem;
+    }
+
+    .subject-card p {
+        font-size: 0.9rem;
+    }
 }

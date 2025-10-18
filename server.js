@@ -119,6 +119,32 @@ app.post("/Home",async (req,res)=>{
     res.redirect("/Home")
 })
 
+app.post("/deleteAcc", async (req, res) => {
+  try {
+    if (!req.session.user) {
+      return res.redirect("/");
+    }
+
+    const rollNo = req.session.user.RollNo;
+
+    const deletedUser = await User.findOneAndDelete({ RollNo: rollNo });
+
+    if (!deletedUser) {
+      return res.status(404).send("User not found.");
+    }
+
+    req.session.destroy(err => {
+      if (err) console.error("Session destroy error:", err);
+    });
+
+    return res.render('Login',{msg1:"acc deleted successfully"});
+  } catch (err) {
+    console.error("❌ Error deleting account:", err);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
 app.get("/Home", async (req, res) => {
   if (!req.session.user) return res.redirect("/");
 

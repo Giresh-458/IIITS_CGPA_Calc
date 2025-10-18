@@ -46,6 +46,16 @@
         </li>
       <% }) %>
     </ul>
+
+    <form id="deleteForm" action="/deleteAcc" method="POST" onsubmit="return confirmDelete()">
+  <button type="submit" class="btn delete-btn">Delete Account</button>
+</form>
+
+<script>
+  function confirmDelete() {
+    return confirm("⚠️ Are you sure you want to permanently delete your account? This action cannot be undone.");
+  }
+</script>
 </div>
 
 <script>
