@@ -31,7 +31,7 @@
             </select>
         </form>
     </div>
-
+    <p color="green"><%=locals.msg%></p>
     <p class="cgpa">CGPA: <%= CGPA %></p>
 
     <h2>SGPA for each semester</h2>
@@ -56,6 +56,14 @@
     return confirm("⚠️ Are you sure you want to permanently delete your account? This action cannot be undone.");
   }
 </script>
+<button type="submit" class="btn delete-btn" id="changepass"> Change Password</button>
+
+<form action="/changepass" method="post" hidden id="form1">
+  <p id="btn12" style="cursor: pointer;">Close</p>
+  <input type="text" name="Old" placeholder="Enter Old Password" required>
+  <input type="text" name="New" placeholder="Enter New Password" required>
+  <button type="submit">Continue</button>
+</form>
 </div>
 
 <script>
@@ -76,6 +84,16 @@ function confirmPathChange(select) {
         document.getElementById('pathForm').submit();
     }
 }
+document.getElementById("changepass").addEventListener("click",()=>{
+  document.getElementById("form1").hidden=false
+})
+
+document.getElementById("btn12").addEventListener("click",()=>{
+  document.getElementById("form1").hidden=true
+})
 </script>
+
+  
+
 </body>
 </html>

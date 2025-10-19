@@ -105,6 +105,7 @@ app.get("/", (req,res)=>{
 })
 
 
+
 app.post("/Home",async (req,res)=>{
     const {RollNo,password}=req.body
    const user= await User.findOne({RollNo})
@@ -118,7 +119,29 @@ app.post("/Home",async (req,res)=>{
     req.session.user={id:user._id,RollNo:user.RollNo}
     res.redirect("/Home")
 })
+app.get("/changepass",(req,res)=>{
+  if(!req.session.user){
+    return res.redirect("/")
+  }
+})
 
+app.post("/changepass",async(req,res)=>{
+  
+  if(!req.session.user){
+    return res.redirect("/")
+  }
+  const {Old,New} = req.body
+  let user=await User.findOne({RollNo: req.session.user.RollNo})
+  let isValid=await bcrypt.compare(Old,user.password)
+  if(isValid){
+    user.password = await bcrypt.hash(New,10)
+    await user.save()
+  }
+  return res.redirect("/profile")}
+
+  
+
+)
 app.post("/deleteAcc", async (req, res) => {
   try {
     if (!req.session.user) {
@@ -304,6 +327,7 @@ app.post("/selectPath", async (req, res) => {
 app.post("/SignUp",async (req,res)=>{
     const {name,password, RollNo, email}=req.body
     const user1= await User.findOne({RollNo:RollNo})
+    email=email.toLowerCase()
     if(user1){
         return res.render("SignUp",{msg:"User already exists"})
     }

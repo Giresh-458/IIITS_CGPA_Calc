@@ -8,17 +8,18 @@ const userSchema = new mongoose.Schema({
   path: { type: String, enum: ["btp", "honours"], default: null }, 
   semesters: [
     {
-      semester: { type: Number, required: true },
+      semester: { type: Number, required: true, min:1, max:10 },
       grades: [
         {
           subject_code: String,
-          grade: String          
+          grade: String,
+          enum: ["O","A","B","C","D","P","F"]    
         }
       ],
-      sgpa: Number
+      sgpa: {type: Number, min: 0, max:10}
     }
   ],
-  cgpa: Number
+  cgpa: {type: Number, min: 0, max:10}
 });
 
 module.exports = mongoose.model("User", userSchema);
