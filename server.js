@@ -331,8 +331,9 @@ app.get("/Home", async (req, res) => {
       Subjects = Subjects.filter(s => !s.subject_name.toLowerCase().includes("honours"));
     }
   }
+const semesterGrades = user.semesters.find(s => s.semester === semester)?.grades || [];
+res.render("CGPA", { semester, Subjects, path, Branch, semesterGrades });
 
-  res.render("CGPA", { semester, Subjects, path, Branch });
 });
 
 

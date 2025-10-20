@@ -31,27 +31,30 @@
         </div>
     <% } %>
 
-<% const filteredSubjects = Subjects.filter(subject => {
-  const nameLower = subject.subject_name.toLowerCase();
-  if(path === 'honours' && nameLower.includes('btp')) return false;
-  if(path === 'btp' && nameLower.includes('honours')) return false;
-  return true;
-}); %>
-
 
 <form action="/submitGrades" method="post">
     <% if (filteredSubjects.length > 0) { %>
         <div class="subjects-grid">
-            <% filteredSubjects.forEach(subject => { %>
-                <div class="subject-card">
-                    <h3><%= subject.subject_name %></h3>
-                    <p><%= subject.credits %> credits</p>
-                    <select name="grades[<%= subject._id %>]" required>
-                        <% ["O","A","B","C","D","P","F"].forEach(grade => { %>
-                            <option value="<%= grade %>"><%= grade %></option>
-                        <% }) %>
-                    </select>
-                </div>
+            <% filteredSubjects.forEach(subject => { 
+                // find if user already has a grade for this subject
+                let existingGrade = null;
+                if (typeof semesterGrades !== "undefined") {
+                    const g = semesterGrades.find(g => g.subject_code.toString() === subject._id.toString());
+                    if (g) existingGrade = g.grade;
+                }
+            %>
+            <div class="subject-card">
+                <h3><%= subject.subject_name %></h3>
+                <p><%= subject.credits %> credits</p>
+                <select name="grades[<%= subject._id %>]" required>
+                    <% ["O","A","B","C","D","P","F"].forEach(grade => { %>
+                        <option value="<%= grade %>" 
+                            <%= existingGrade ? (existingGrade === grade ? 'selected' : '') : (grade === 'O' ? 'selected' : '') %>>
+                            <%= grade %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
             <% }) %>
         </div>
         <input type="hidden" name="semester" value="<%= semester %>">
@@ -60,6 +63,7 @@
         <p>No subjects found for your branch/path in this semester.</p>
     <% } %>
 </form>
+
 
 
 <% if (!path && semester >= 5) { %>
@@ -81,6 +85,100 @@
   document.getElementById('pathModal').style.display = 'block';
 </script>
 <% } %>
+
+</div>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CGPA Tracker</title>
+    <link rel="stylesheet" href="../css/CGPA.css">
+</head>
+<body>
+<div class="container">
+    <div class="profile-btn-wrapper">
+        <a href="/profile" class="glass-btn">Profile</a>
+    </div>
+
+    <h1>SGPA Overview</h1>
+
+    <form id="semester-select" method="GET" action="/Home">
+        <select name="semester" onchange="this.form.submit()">
+            <% for(let i=1; i<=8; i++){ %>
+                <option value="<%= i %>" <%= semester == i ? 'selected':'' %>>Semester <%= i %></option>
+            <% } %>
+        </select>
+    </form>
+
+    <p class="note">Grades must be O, A, B, C, D, P, F</p>
+
+    <% if (typeof sgpa !== "undefined") { %>
+        <div class="sgpa-cgpa">
+            <span>SGPA: <%= sgpa %></span>
+            <span>CGPA: <%= cgpa %></span>
+        </div>
+    <% } %>
+    <% filteredSubjects.forEach(subject => { 
+    let existingGrade = null;
+    if (typeof semesterGrades !== "undefined") {
+        const g = semesterGrades.find(g => g.subject_code.toString() === subject._id.toString());
+        if (g) existingGrade = g.grade;
+    }
+%>
+    <form action="/submitGrades" method="post">
+        <% if (filteredSubjects.length > 0) { %>
+            <div class="subjects-grid">
+                <% filteredSubjects.forEach(subject => { 
+                    let existingGrade = null;
+                    if (typeof semesterGrades !== "undefined") {
+                        const g = semesterGrades.find(g => g.subject_code.toString() === subject._id.toString());
+                        if (g) existingGrade = g.grade;
+                    }
+                %>
+                <div class="subject-card">
+                    <h3><%= subject.subject_name %></h3>
+                    <p><%= subject.credits %> credits</p>
+                    <select name="grades[<%= subject._id %>]" required>
+                        <% ["O","A","B","C","D","P","F"].forEach(grade => { %>
+                            <option value="<%= grade %>" 
+                                <%= existingGrade ? (existingGrade === grade ? 'selected' : '') : (grade === 'O' ? 'selected' : '') %>>
+                                <%= grade %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+                <% }) %>
+            </div>
+            <input type="hidden" name="semester" value="<%= semester %>">
+            <button type="submit">Submit Grades</button>
+        <% } else { %>
+            <p>No subjects found for your branch/path in this semester.</p>
+        <% } %>
+    </form>
+
+    <% if (!path && semester >= 5) { %>
+    <div id="pathModal" class="modal">
+      <div class="modal-content">
+        <h2>Select Your Path</h2>
+        <form action="/selectPath" method="POST">
+          <select name="path" required>
+            <option value="">--Choose--</option>
+            <option value="btp">BTP</option>
+            <option value="honours">Honours</option>
+          </select>
+          <br><br>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+    <script>
+      document.getElementById('pathModal').style.display = 'block';
+    </script>
+    <% } %>
 
 </div>
 </body>
