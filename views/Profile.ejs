@@ -1,37 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Profile</title>
-<link rel="stylesheet" href="../css/Profile.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile</title>
+  <link rel="stylesheet" href="../css/Profile.css" />
 </head>
 <body>
-<div class="container">
+  <div class="container">
     <div class="top-buttons">
-        <a href="/Home" class="btn">Back</a>
-        <a href="/logout" class="btn">Logout</a>
+      <a href="/Home" class="btn">Back</a>
+      <a href="/logout" class="btn">Logout</a>
     </div>
 
     <h1>Your Details</h1>
-    <p class="detail">Name: <strong><%= name %></p></strong>
-    <p class="detail">Roll No: <strong><%= RollNo %></p></strong>
-    <p class="detail">Email: <strong><%= email %></p></strong>
 
-    <% if (path) { %>
-        <p class="detail">Selected Path: <strong><%= path.toUpperCase()%></strong></p>
+    <p class="detail">Name: <strong><%= name %></strong></p>
+    <p class="detail">Roll No: <strong><%= RollNo %></strong></p>
+    <p class="detail">Email: <strong><%= email %></strong></p>
+
+    <% if (locals.path) { %>
+      <p class="detail">Selected Path: <strong><%= path.toUpperCase() %></strong></p>
     <% } %>
 
     <div class="path-form">
-        <form action="/selectPath" method="post" id="pathForm">
-            <label for="HorB">Choose Path:</label>
-            <select name="path" id="HorB" onchange="confirmPathChange(this)">
-                <option value="btp" <%= path === "btp" ? "selected" : "" %>>BTP</option>
-                <option value="honours" <%= path === "honours" ? "selected" : "" %>>Honours</option>
-            </select>
-        </form>
+      <form action="/selectPath" method="post" id="pathForm">
+        <label for="HorB">Choose Path:</label>
+        <select name="path" id="HorB" onchange="confirmPathChange(this)">
+          <option value="btp" <%= path === "btp" ? "selected" : "" %>>BTP</option>
+          <option value="honours" <%= path === "honours" ? "selected" : "" %>>Honours</option>
+        </select>
+      </form>
     </div>
-    <p color="green"><%=locals.msg%></p>
+
+    <% if (locals.msg) { if(msg=="Password Incorrect"){%>
+      <strong style="color:red;text-align:center;display:block;"><%=msg%></strong>
+    <%}else{%>
+      <strong style="color:green;text-align:center;display:block;"><%=msg%></strong>
+    <% } }%>
+
     <p class="cgpa">CGPA: <%= CGPA %></p>
 
     <h2>SGPA for each semester</h2>
@@ -39,7 +46,8 @@
       <% allSemesters.forEach(s => { %>
         <li class="semester-item">
           <span>Semester <%= s.semester %>: <%= (s.sgpa || 0).toFixed(2) %></span>
-          <form action="/deleteSemester" method="POST" class="delete-form">
+          <form action="/deleteSemester" method="POST" class="delete-form"
+                onsubmit="return confirm1('⚠️ Delete Semester <%= s.semester %>?')">
             <input type="hidden" name="semester" value="<%= s.semester %>">
             <button type="submit" class="btn delete-btn">Delete</button>
           </form>
@@ -47,53 +55,53 @@
       <% }) %>
     </ul>
 
-    <form id="deleteForm" action="/deleteAcc" method="POST" onsubmit="return confirmDelete()">
-  <button type="submit" class="btn delete-btn">Delete Account</button>
-</form>
+    <div class="action-section">
+      <form id="deleteForm" action="/deleteAcc" method="POST"
+            onsubmit="return confirm1('⚠️ Are you sure you want to permanently delete your account? This action cannot be undone.')">
+        <button type="submit" class="btn delete-btn full-btn">Delete Account</button>
+      </form>
 
-<script>
-  function confirmDelete() {
-    return confirm("⚠️ Are you sure you want to permanently delete your account? This action cannot be undone.");
-  }
-</script>
-<button type="submit" class="btn delete-btn" id="changepass"> Change Password</button>
+      <button type="button" class="btn change-btn full-btn" id="changepass">
+        Change Password
+      </button>
+    </div>
+  </div>
 
-<form action="/changepass" method="post" hidden id="form1">
-  <p id="btn12" style="cursor: pointer;">Close</p>
-  <input type="text" name="Old" placeholder="Enter Old Password" required>
-  <input type="text" name="New" placeholder="Enter New Password" required>
-  <button type="submit">Continue</button>
-</form>
-</div>
+  <div id="passwordModal" class="modal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <h2>Change Password</h2>
+      <form action="/changepass" method="post" class="change-pass-form"
+            onsubmit="return confirm1('⚠️ Are you sure you want to change your password?')">
+        <input type="password" name="Old" placeholder="Enter Old Password" required>
+        <input type="password" name="New" placeholder="Enter New Password" required>
+        <button type="submit" class="btn submit-btn">Confirm Change</button>
+      </form>
+    </div>
+  </div>
 
-<script>
-function confirmPathChange(select) {
-    const currentPath = "<%= path %>";
-    const newPath = select.value;
-
-    if (currentPath && currentPath !== newPath) {
-        const confirmed = confirm(
-            "Warning: Changing your path will delete all data for Semesters 5 to 8. Do you want to continue?"
-        );
-        if (confirmed) {
-            document.getElementById('pathForm').submit();
-        } else {
-            select.value = currentPath;
-        }
-    } else {
-        document.getElementById('pathForm').submit();
+  <script>
+    function confirm1(msg) {
+      return confirm(msg);
     }
-}
-document.getElementById("changepass").addEventListener("click",()=>{
-  document.getElementById("form1").hidden=false
-})
 
-document.getElementById("btn12").addEventListener("click",()=>{
-  document.getElementById("form1").hidden=true
-})
-</script>
+    function confirmPathChange(select) {
+      const currentPath = "<%= path %>";
+      const newPath = select.value;
+      if (currentPath && currentPath !== newPath) {
+        const confirmed = confirm("⚠️ Changing your path will delete data for Semesters 5 to 8. Continue?");
+        if (confirmed) document.getElementById('pathForm').submit();
+        else select.value = currentPath;
+      } else document.getElementById('pathForm').submit();
+    }
 
-  
+    const modal = document.getElementById("passwordModal");
+    const openBtn = document.getElementById("changepass");
+    const closeBtn = document.getElementById("closeModal");
 
+    openBtn.onclick = () => { modal.style.display = "flex"; };
+    closeBtn.onclick = () => { modal.style.display = "none"; };
+    window.onclick = (e) => { if (e.target === modal) modal.style.display = "none"; };
+  </script>
 </body>
 </html>

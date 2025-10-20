@@ -125,19 +125,41 @@ app.get("/changepass",(req,res)=>{
   }
 })
 
+app.get("/profile", async (req, res) => {
+    if (!req.session.user) return res.redirect("/");
+
+    const RollNo = req.session.user.RollNo;
+    const user = await User.findOne({ RollNo });
+
+    if (!user) return res.redirect("/");
+
+    const sortedSemesters = (user.semesters || []).sort((a, b) => a.semester - b.semester);
+    req.session.profile= {name: user.name,
+        RollNo: user.RollNo,
+        email: user.email,
+        CGPA: (user.cgpa || 0).toFixed(2),
+        allSemesters: sortedSemesters,
+        path: user.path || null}
+    res.render("Profile", req.session.profile);
+});
+
 app.post("/changepass",async(req,res)=>{
   
   if(!req.session.user){
     return res.redirect("/")
   }
   const {Old,New} = req.body
+  profile= req.session.profile
   let user=await User.findOne({RollNo: req.session.user.RollNo})
   let isValid=await bcrypt.compare(Old,user.password)
   if(isValid){
     user.password = await bcrypt.hash(New,10)
     await user.save()
+    return res.render("Profile",{...profile,msg:"Password changed successfully"})}
+  
+
+   return res.render("Profile",{...profile,msg:"Password Incorrect"})
   }
-  return res.redirect("/profile")}
 
   
 
@@ -325,7 +347,7 @@ app.post("/selectPath", async (req, res) => {
 
 
 app.post("/SignUp",async (req,res)=>{
-    const {name,password, RollNo, email}=req.body
+    let {name,password, RollNo, email}=req.body
     const user1= await User.findOne({RollNo:RollNo})
     email=email.toLowerCase()
     if(user1){
@@ -344,25 +366,7 @@ app.post("/SignUp",async (req,res)=>{
     res.redirect("/")
 })
 
-app.get("/profile", async (req, res) => {
-    if (!req.session.user) return res.redirect("/");
 
-    const RollNo = req.session.user.RollNo;
-    const user = await User.findOne({ RollNo });
-
-    if (!user) return res.redirect("/");
-
-    const sortedSemesters = (user.semesters || []).sort((a, b) => a.semester - b.semester);
-
-    res.render("Profile", {
-        name: user.name,
-        RollNo: user.RollNo,
-        email: user.email,
-        CGPA: (user.cgpa || 0).toFixed(2),
-        allSemesters: sortedSemesters,
-        path: user.path || null
-    });
-});
 
 
 
