@@ -19,7 +19,8 @@ const userSchema = new mongoose.Schema({
       sgpa: {type: Number, min: 0, max:10}
     }
   ],
-  cgpa: {type: Number, min: 0, max:10}
+  cgpa: {type: Number, min: 0, max:10},
+  Branch: {type: String, enum: ["CSE", "ECE", "AIDS"], default: null}
 });
 
 module.exports = mongoose.model("User", userSchema);

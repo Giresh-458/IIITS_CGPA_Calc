@@ -19,10 +19,20 @@
     <p class="detail">Roll No: <strong><%= RollNo %></strong></p>
     <p class="detail">Email: <strong><%= email %></strong></p>
 
+    <div class="path-form">
+      <form action="/Branch" method="post" id="branchForm">
+        <label for="branch">Change Branch:</label>
+        <select name="Branch" id="branch" onchange="confirmBranchChange(this)">
+          <option value="CSE" <%= Branch === "CSE" ? "selected" : "" %>>CSE</option>
+          <option value="ECE" <%= Branch === "ECE" ? "selected" : "" %>>ECE</option>
+          <option value="AIDS" <%= Branch === "AIDS" ? "selected" : "" %>>AIDS</option>
+        </select>
+      </form>
+    </div>
+
     <% if (locals.path) { %>
       <p class="detail">Selected Path: <strong><%= path.toUpperCase() %></strong></p>
     <% } %>
-
     <div class="path-form">
       <form action="/selectPath" method="post" id="pathForm">
         <label for="HorB">Choose Path:</label>
@@ -33,11 +43,9 @@
       </form>
     </div>
 
-    <% if (locals.msg) { if(msg=="Password Incorrect"){%>
-      <strong style="color:red;text-align:center;display:block;"><%=msg%></strong>
-    <%}else{%>
-      <strong style="color:green;text-align:center;display:block;"><%=msg%></strong>
-    <% } }%>
+    <% if (locals.msg) { %>
+      <p class="<%= msg === 'Password Incorrect' ? 'error-msg' : 'success-msg' %>"><%= msg %></p>
+    <% } %>
 
     <p class="cgpa">CGPA: <%= CGPA %></p>
 
@@ -89,10 +97,20 @@
       const currentPath = "<%= path %>";
       const newPath = select.value;
       if (currentPath && currentPath !== newPath) {
-        const confirmed = confirm("⚠️ Changing your path will delete data for Semesters 5 to 8. Continue?");
+        const confirmed = confirm("⚠️ Changing your path will delete data for Semesters 5–8. Continue?");
         if (confirmed) document.getElementById('pathForm').submit();
         else select.value = currentPath;
       } else document.getElementById('pathForm').submit();
+    }
+
+    function confirmBranchChange(select) {
+      const currentBranch = "<%= Branch %>";
+      const newBranch = select.value;
+      if (currentBranch && currentBranch !== newBranch) {
+        const confirmed = confirm("⚠️ Changing your Branch will delete all semester data. Continue?");
+        if (confirmed) document.getElementById('branchForm').submit();
+        else select.value = currentBranch;
+      } else document.getElementById('branchForm').submit();
     }
 
     const modal = document.getElementById("passwordModal");

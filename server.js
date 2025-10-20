@@ -139,7 +139,8 @@ app.get("/profile", async (req, res) => {
         email: user.email,
         CGPA: (user.cgpa || 0).toFixed(2),
         allSemesters: sortedSemesters,
-        path: user.path || null}
+        path: user.path || null,
+        Branch: user.Branch}
     res.render("Profile", req.session.profile);
 });
 
@@ -156,13 +157,8 @@ app.post("/changepass",async(req,res)=>{
     user.password = await bcrypt.hash(New,10)
     await user.save()
     return res.render("Profile",{...profile,msg:"Password changed successfully"})}
-  
-
    return res.render("Profile",{...profile,msg:"Password Incorrect"})
   }
-
-  
-
 )
 app.post("/deleteAcc", async (req, res) => {
   try {
@@ -199,7 +195,6 @@ app.get("/Home", async (req, res) => {
 
   let Subjects = await Subject.find({ semester });
 
-  // Filter subjects based on selected path
   if ([5,6,7,8].includes(semester)) {
     if (path === "honours") {
       Subjects = Subjects.filter(s => !s.subject_name.toLowerCase().includes("btp"));
@@ -342,12 +337,29 @@ app.post("/selectPath", async (req, res) => {
   res.redirect("/Home?semester=5");
 });
 
-
+app.post("/Branch", async (req, res) => {
+  if(!req.session.user){
+    res.redirect("/")
+  }
+  const { Branch } = req.body; 
+  const user = await User.findById(req.session.user.id);
+   if (user.Branch && user.Branch !== Branch) {
+    user.semesters = user.semesters.filter(s=>s.semester<1);
+  }
+  user.Branch = Branch;
+  await user.save();
+res.send(`
+  <script>
+    alert('Branch Changed Successfully');
+    window.location.href = '/Home?semester=1';
+  </script>
+`);
+});
 
 
 
 app.post("/SignUp",async (req,res)=>{
-    let {name,password, RollNo, email}=req.body
+    let {name,password, RollNo, email, Branch}=req.body
     const user1= await User.findOne({RollNo:RollNo})
     email=email.toLowerCase()
     if(user1){
@@ -361,7 +373,7 @@ app.post("/SignUp",async (req,res)=>{
     }
 
     const hashedPass=await bcrypt.hash(password,10)
-    const user=new User({name:name,password:hashedPass, RollNo:RollNo, email:email})
+    const user=new User({name:name,password:hashedPass, RollNo:RollNo, email:email,Branch: Branch})
     await user.save()
     res.redirect("/")
 })
