@@ -35,11 +35,11 @@
         <% if (Subjects && Subjects.length > 0) { %>
             <div class="subjects-grid">
                 <% Subjects.forEach(subject => { 
+                    if(subject.Branch == Branch){
                     const nameLower = subject.subject_name.toLowerCase();
-                    // Skip BTP if path is honours
                     if(path === 'honours' && nameLower.includes('btp')) return;
-                    // Skip Honours if path is btp
                     if(path === 'btp' && nameLower.includes('honours')) return;
+                    }
                 %>
                     <div class="subject-card">
                         <h3><%= subject.subject_name %></h3>
