@@ -407,7 +407,7 @@ app.post("/submitGrades", async (req, res) => {
     let totalPoints = 0;
 
     const semesterGrades = subjects.map(subject => {
-      const grade = grades[subject._id] ? user.semestersgrades[subject._id].toUpperCase() : "F";
+      const grade = grades[subject._id] ? grades[subject._id].toUpperCase() : "F";
       const points = gradePoints[grade] || 0;
 
       totalCredits += subject.credits;
