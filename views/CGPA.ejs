@@ -31,33 +31,36 @@
         </div>
     <% } %>
 
-    <form action="/submitGrades" method="post">
-        <% if (Subjects && Subjects.length > 0) { %>
-            <div class="subjects-grid">
-                <% Subjects.forEach(subject => { 
-                    if(subject.Branch == Branch){
-                    const nameLower = subject.subject_name.toLowerCase();
-                    if(path === 'honours' && nameLower.includes('btp')) return;
-                    if(path === 'btp' && nameLower.includes('honours')) return;
-                    }
-                %>
-                    <div class="subject-card">
-                        <h3><%= subject.subject_name %></h3>
-                        <p><%= subject.credits %> credits</p>
-                        <select name="grades[<%= subject._id %>]" required>
-                            <% ["O","A","B","C","D","P","F"].forEach(grade => { %>
-                                <option value="<%= grade %>"><%= grade %></option>
-                            <% }) %>
-                        </select>
-                    </div>
-                <% }) %>
-            </div>
-            <input type="hidden" name="semester" value="<%= semester %>">
-            <button type="submit">Submit Grades</button>
-        <% } else { %>
-            <p>No subjects found for this semester.</p>
-        <% } %>
-    </form>
+<% const filteredSubjects = Subjects.filter(subject => {
+  const nameLower = subject.subject_name.toLowerCase();
+  if(path === 'honours' && nameLower.includes('btp')) return false;
+  if(path === 'btp' && nameLower.includes('honours')) return false;
+  return true;
+}); %>
+
+
+<form action="/submitGrades" method="post">
+    <% if (filteredSubjects.length > 0) { %>
+        <div class="subjects-grid">
+            <% filteredSubjects.forEach(subject => { %>
+                <div class="subject-card">
+                    <h3><%= subject.subject_name %></h3>
+                    <p><%= subject.credits %> credits</p>
+                    <select name="grades[<%= subject._id %>]" required>
+                        <% ["O","A","B","C","D","P","F"].forEach(grade => { %>
+                            <option value="<%= grade %>"><%= grade %></option>
+                        <% }) %>
+                    </select>
+                </div>
+            <% }) %>
+        </div>
+        <input type="hidden" name="semester" value="<%= semester %>">
+        <button type="submit">Submit Grades</button>
+    <% } else { %>
+        <p>No subjects found for your branch/path in this semester.</p>
+    <% } %>
+</form>
+
 
 <% if (!path && semester >= 5) { %>
 <div id="pathModal" class="modal">

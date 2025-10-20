@@ -320,11 +320,11 @@ app.get("/Home", async (req, res) => {
   const semester = parseInt(req.query.semester) || 1;
   const user = await User.findById(req.session.user.id);
   const path = user.path || null;
-  const Branch = user.Branch
+  const Branch = user.Branch;
 
-  let Subjects = await Subject.find({ semester });
+  let Subjects = await Subject.find({ semester, Branch });
 
-  if ([5,6,7,8].includes(semester)) {
+  if ([5, 6, 7, 8].includes(semester)) {
     if (path === "honours") {
       Subjects = Subjects.filter(s => !s.subject_name.toLowerCase().includes("btp"));
     } else if (path === "btp") {
@@ -389,25 +389,25 @@ app.post("/submitGrades", async (req, res) => {
     if (!userId) return res.redirect("/");
 
     const { semester, grades } = req.body;
-    let subjects = await Subject.find({ semester });
 
     const user = await User.findById(userId);
-    if (semester==6||semester==5||semester==7||semester==8) {
-      if (user.path == "honours") {
+    const Branch = user.Branch;
+
+    let subjects = await Subject.find({ semester, Branch });
+
+    if ([5,6,7,8].includes(parseInt(semester))) {
+      if (user.path === "honours") {
         subjects = subjects.filter(s => !s.subject_name.toLowerCase().includes("btp"));
-        
-      } else if (user.path == "btp") {
+      } else if (user.path === "btp") {
         subjects = subjects.filter(s => !s.subject_name.toLowerCase().includes("honours"));
       }
     }
-
-    
 
     let totalCredits = 0;
     let totalPoints = 0;
 
     const semesterGrades = subjects.map(subject => {
-      const grade = grades[subject._id] ? grades[subject._id].toUpperCase() : "F";
+      const grade = grades[subject._id] ? user.semestersgrades[subject._id].toUpperCase() : "F";
       const points = gradePoints[grade] || 0;
 
       totalCredits += subject.credits;
@@ -427,13 +427,13 @@ app.post("/submitGrades", async (req, res) => {
     }
 
     const totalSgpa = user.semesters.reduce((acc, s) => acc + s.sgpa, 0);
-    user.cgpa = (user.semesters.length ? (totalSgpa / user.semesters.length).toFixed(2) : 0);
+    user.cgpa = user.semesters.length ? (totalSgpa / user.semesters.length).toFixed(2) : 0;
 
     await user.save();
 
     res.render("CGPA", {
       semester,
-      Subjects: subjects,
+      Subjects: subjects,   
       sgpa: sgpa.toFixed(2),
       cgpa: user.cgpa,
       path: user.path
