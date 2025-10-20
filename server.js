@@ -332,7 +332,15 @@ app.get("/Home", async (req, res) => {
     }
   }
 const semesterGrades = user.semesters.find(s => s.semester === semester)?.grades || [];
-res.render("CGPA", { semester, Subjects, path, Branch, semesterGrades });
+
+res.render("CGPA", { 
+  semester, 
+  Subjects, 
+  filteredSubjects: Subjects,  
+  path, 
+  Branch, 
+  semesterGrades 
+});
 
 });
 
@@ -434,11 +442,16 @@ app.post("/submitGrades", async (req, res) => {
 
     res.render("CGPA", {
       semester,
+      filteredSubjects: subjects,
       Subjects: subjects,   
       sgpa: sgpa.toFixed(2),
       cgpa: user.cgpa,
-      path: user.path
+      path: user.path,
+      semesterGrades
     });
+
+
+
 
   } catch (err) {
     console.error(err);
@@ -507,10 +520,6 @@ app.post("/SignUp",async (req,res)=>{
     await user.save()
     res.redirect("/")
 })
-
-
-
-
 
 app.listen(PORT,()=>{
     console.log(`http://localhost:${PORT}`)

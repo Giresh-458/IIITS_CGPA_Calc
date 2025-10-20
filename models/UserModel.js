@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  RollNo: { type: String, required: true, unique: true },
+  RollNo: {
+    type: String,
+    required: true,
+    unique: true,
+    match: /^S202[2-7]00[1-3]0[0-9]{3}$/
+  },
   name: { type: String, required: true },
   email: { type: String, unique: true, sparse: true },
   password: { type: String, required: true },

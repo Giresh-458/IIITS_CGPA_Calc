@@ -21,7 +21,7 @@
     <form action="/Home" method="post">
         <p style="color:red"><%= locals.msg%></p>
         <label for="Roll No">Roll No</label>
-        <input class="textbox" type="text" name="RollNo" placeholder="S202[2-7]0010001" pattern="S202[2-7]0010[0-9]{3}" title="Enter a valid Roll No (e.g., S20230010256)" required>
+        <input class="textbox" type="text" name="RollNo" placeholder="S202[2-7]00[1-3]0001" pattern="S202[2-7]00[1-3]0[0-9]{3}" title="Enter a valid Roll No (e.g., S20230010256)" required>
         <label for="password">Password</label>
         <input class="textbox" type="password" name="password" placeholder="******" required>
         <button class="button">Login</button>
