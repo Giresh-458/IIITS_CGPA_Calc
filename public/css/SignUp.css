@@ -103,6 +103,31 @@ form input:focus {
   box-shadow: 0px 0px 6px rgba(42, 155, 79, 0.3);
 }
 
+form select {
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 15px;
+  background: #fff url('data:image/svg+xml;utf8,<svg fill="%23777" height="20" viewBox="0 0 20 20" width="20" xmlns="http://www.w3.org/2000/svg"><polygon points="0,0 20,0 10,10"/></svg>') no-repeat right 10px center;
+  appearance: none; 
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin-bottom: 18px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+form select:focus {
+  outline: none;
+  border-color: #2A9B4F;
+  box-shadow: 0px 0px 6px rgba(42, 155, 79, 0.3);
+}
+
+form select:hover {
+  border-color: #227C40;
+}
+
+
 .button {
   padding: 14px;
   font-size: 16px;

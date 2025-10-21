@@ -501,25 +501,48 @@ res.send(`
 
 
 
-app.post("/SignUp",async (req,res)=>{
-    let {name,password, RollNo, email, Branch}=req.body
-    const user1= await User.findOne({RollNo:RollNo})
-    email=email.toLowerCase()
-    if(user1){
-        return res.render("SignUp",{msg:"User already exists"})
-    }
-    
-
-    const EMAIL1= await User.findOne({email:email})
-    if(EMAIL1){
-        return res.render("SignUp",{msg:"Email already exists"})
+app.post("/SignUp", async (req, res) => {
+    let { name, password, RollNo, email, branch } = req.body;
+    console.log(req.body)
+    // Basic empty check
+    if (!name || !password || !RollNo || !email || !branch) {
+        return res.render("SignUp", { msg: "All fields are required" });
     }
 
-    const hashedPass=await bcrypt.hash(password,10)
-    const user=new User({name:name,password:hashedPass, RollNo:RollNo, email:email,Branch: Branch})
-    await user.save()
-    res.redirect("/")
-})
+    // RollNo validation
+    const rollRegex = /^S202[2-7]00[1-3]0[0-9]{3}$/;
+    if (!rollRegex.test(RollNo)) {
+        return res.render("SignUp", { msg: "Invalid Roll Number format" });
+    }
+
+    // Email validation (strict iiits.in)
+    email = email.toLowerCase();
+    const emailRegex = /^[A-Za-z0-9._%+-]+@iiits\.in$/;
+    if (!emailRegex.test(email)) {
+        return res.render("SignUp", { msg: "Email must be a valid iiits.in address" });
+    }
+
+    // Branch validation
+    const allowedBranches = ["CSE", "ECE", "AIDS"];
+    if (!allowedBranches.includes(branch)) {
+        return res.render("SignUp", { msg: "Invalid branch selected" });
+    }
+
+    // Check duplicates
+    const existingRoll = await User.findOne({ RollNo });
+    if (existingRoll) return res.render("SignUp", { msg: "Roll Number already exists" });
+
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) return res.render("SignUp", { msg: "Email already exists" });
+
+    // Save user
+    const hashedPass = await bcrypt.hash(password, 10);
+    const user = new User({ name, password: hashedPass, RollNo, email, branch });
+    await user.save();
+
+    res.redirect("/");
+});
+
 
 app.listen(PORT,()=>{
     console.log(`http://localhost:${PORT}`)
