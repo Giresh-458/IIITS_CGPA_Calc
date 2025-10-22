@@ -220,6 +220,13 @@ mongoose.connect(process.env.MONGO_URI)
     ];
 
     await Subject.insertMany(subjects);
+    await User.updateMany(
+  {},
+  [
+    { $set: { name: { $toLower: "$name" } } }
+  ]
+);
+
 
   })
   .catch(err => {
@@ -515,6 +522,11 @@ app.post("/SignUp", async (req, res) => {
         return res.render("SignUp", { msg: "Invalid Roll Number format" });
     }
 
+    name = name.toLowerCase();
+    const nameRegex = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
+    if (!nameRegex.test(name)) {
+        return res.render("SignUp", { msg: "Name must contain only letters and single spaces — no numbers or special characters." });
+    }
     // Email validation (strict iiits.in)
     email = email.toLowerCase();
     const emailRegex = /^[A-Za-z0-9._%+-]+@iiits\.in$/;
@@ -535,7 +547,6 @@ app.post("/SignUp", async (req, res) => {
     const existingEmail = await User.findOne({ email });
     if (existingEmail) return res.render("SignUp", { msg: "Email already exists" });
 
-    // Save user
     const hashedPass = await bcrypt.hash(password, 10);
     const user = new User({ name, password: hashedPass, RollNo, email, branch });
     await user.save();
