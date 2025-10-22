@@ -502,7 +502,6 @@ res.send(`
 
 app.post("/SignUp", async (req, res) => {
     let { name, password, RollNo, email, branch } = req.body;
-    console.log(req.body)
     // Basic empty check
     if (!name || !password || !RollNo || !email || !branch) {
         return res.render("SignUp", { msg: "All fields are required" });
