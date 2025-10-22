@@ -220,15 +220,7 @@ mongoose.connect(process.env.MONGO_URI)
     ];
 
     await Subject.insertMany(subjects);
-    await User.updateMany(
-  {},
-  [
-    { $set: { name: { $toLower: "$name" } } }
-  ]
-);
-
-
-  })
+ })
   .catch(err => {
     console.error("Error connecting to MongoDB:", err);
     process.exit(1);
